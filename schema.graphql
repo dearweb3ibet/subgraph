@@ -1,4 +1,13 @@
 type Bet @entity {
   id: ID!
-  firstMember: String!
+  createdDate: BigInt
+  symbol: String
+  minPrice: BigInt
+  maxPrice: BigInt
+  dayStartTimestamp: BigInt
+  rate: BigInt
+  firstMember: String
+  secondMember: String
+  winner: String
+  winning: BigInt
 }

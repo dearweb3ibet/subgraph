@@ -84,6 +84,72 @@ export class OwnershipTransferred__Params {
   }
 }
 
+export class ParamsSet extends ethereum.Event {
+  get params(): ParamsSet__Params {
+    return new ParamsSet__Params(this);
+  }
+}
+
+export class ParamsSet__Params {
+  _event: ParamsSet;
+
+  constructor(event: ParamsSet) {
+    this._event = event;
+  }
+
+  get tokenId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get params(): ParamsSetParamsStruct {
+    return changetype<ParamsSetParamsStruct>(
+      this._event.parameters[1].value.toTuple()
+    );
+  }
+}
+
+export class ParamsSetParamsStruct extends ethereum.Tuple {
+  get createdDate(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get symbol(): string {
+    return this[1].toString();
+  }
+
+  get minPrice(): BigInt {
+    return this[2].toBigInt();
+  }
+
+  get maxPrice(): BigInt {
+    return this[3].toBigInt();
+  }
+
+  get dayStartTimestamp(): BigInt {
+    return this[4].toBigInt();
+  }
+
+  get rate(): BigInt {
+    return this[5].toBigInt();
+  }
+
+  get firstMember(): Address {
+    return this[6].toAddress();
+  }
+
+  get secondMember(): Address {
+    return this[7].toAddress();
+  }
+
+  get winner(): Address {
+    return this[8].toAddress();
+  }
+
+  get winning(): BigInt {
+    return this[9].toBigInt();
+  }
+}
+
 export class Transfer extends ethereum.Event {
   get params(): Transfer__Params {
     return new Transfer__Params(this);

@@ -6,9 +6,9 @@ dataSources:
     name: Bet
     network: mumbai
     source:
-      address: "0x00E76FA942fA2f52bF9D398318196924534bA83c"
+      address: "0xa06D8a9d29050Cb2fc8CC03eAce0c1c155BF16B3"
       abi: Bet
-      startBlock: 28998251
+      startBlock: 29150420
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -21,4 +21,6 @@ dataSources:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
+        - event: ParamsSet(indexed uint256,(uint256,string,int256,int256,uint256,uint256,address,address,address,uint256))
+          handler: handleParamsSet
       file: ./src/handlers/betHandlers.ts
