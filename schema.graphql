@@ -33,22 +33,25 @@ type BetParticipant @entity {
 
 type Contest @entity {
   id: ID! # contract address
-  wavesNumber: BigInt!
+  wavesNumber: Int!
+  waves: [ContestWave!]! @derivedFrom(field: "contest")
 }
 
 type ContestWave @entity {
   id: ID! # combination of contest address and wave index
+  contest: Contest!
   index: BigInt!
   startTimestamp: BigInt!
   endTimestamp: BigInt!
   closeTimestamp: BigInt!
   winnersNumber: BigInt!
   winning: BigInt!
-  participants: [ContestWaveParticipant!]!
+  participants: [ContestWaveParticipant!]! @derivedFrom(field: "wave")
 }
 
 type ContestWaveParticipant @entity {
   id: ID! # combination of wave id and account address
+  wave: ContestWave!
   accountAddress: String!
   successes: BigInt!
   failures: BigInt!

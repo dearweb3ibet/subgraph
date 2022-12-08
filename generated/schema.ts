@@ -327,13 +327,22 @@ export class Contest extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get wavesNumber(): BigInt {
+  get wavesNumber(): i32 {
     let value = this.get("wavesNumber");
-    return value!.toBigInt();
+    return value!.toI32();
   }
 
-  set wavesNumber(value: BigInt) {
-    this.set("wavesNumber", Value.fromBigInt(value));
+  set wavesNumber(value: i32) {
+    this.set("wavesNumber", Value.fromI32(value));
+  }
+
+  get waves(): Array<string> {
+    let value = this.get("waves");
+    return value!.toStringArray();
+  }
+
+  set waves(value: Array<string>) {
+    this.set("waves", Value.fromStringArray(value));
   }
 }
 
@@ -366,6 +375,15 @@ export class ContestWave extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
+  }
+
+  get contest(): string {
+    let value = this.get("contest");
+    return value!.toString();
+  }
+
+  set contest(value: string) {
+    this.set("contest", Value.fromString(value));
   }
 
   get index(): BigInt {
@@ -466,6 +484,15 @@ export class ContestWaveParticipant extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
+  }
+
+  get wave(): string {
+    let value = this.get("wave");
+    return value!.toString();
+  }
+
+  set wave(value: string) {
+    this.set("wave", Value.fromString(value));
   }
 
   get accountAddress(): string {
