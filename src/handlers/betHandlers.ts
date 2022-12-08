@@ -62,9 +62,7 @@ export function handleParticipantSet(event: ParticipantSet): void {
   }
   // Define bet participant id
   let betParticipantId =
-    event.params.tokenId.toString() +
-    "_" +
-    event.params.participantAccountAddress.toHexString();
+    bet.id + "_" + event.params.participantAccountAddress.toHexString();
   // Load or create bet participant
   let betParticipant = BetParticipant.load(betParticipantId);
   if (!betParticipant) {
