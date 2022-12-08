@@ -1,15 +1,56 @@
 type Bet @entity {
   id: ID!
-  createdTimestamp: BigInt
-  creatorAddress: String
-  creatorFee: BigInt
-  symbol: String
-  targetMinPrice: BigInt
-  targetMaxPrice: BigInt
-  targetTimestamp: BigInt
-  participationDeadlineTimestamp: BigInt
-  feeForSuccess: BigInt
-  feeForFailure: BigInt
-  isClosed: Boolean
-  isSuccessful: Boolean
+  params: BetParams! @derivedFrom(field: "bet")
+  participants: [BetParticipant!]! @derivedFrom(field: "bet")
+}
+
+type BetParams @entity {
+  id: ID! # bet id
+  bet: Bet!
+  createdTimestamp: BigInt!
+  creatorAddress: String!
+  creatorFee: BigInt!
+  symbol: String!
+  targetMinPrice: BigInt!
+  targetMaxPrice: BigInt!
+  targetTimestamp: BigInt!
+  participationDeadlineTimestamp: BigInt!
+  feeForSuccess: BigInt!
+  feeForFailure: BigInt!
+  isClosed: Boolean!
+  isSuccessful: Boolean!
+}
+
+type BetParticipant @entity {
+  id: ID! # combination of bet id and account address
+  bet: Bet!
+  addedTimestamp: BigInt!
+  accountAddress: String!
+  fee: BigInt!
+  isFeeForSuccess: Boolean!
+  winning: BigInt!
+}
+
+type Contest @entity {
+  id: ID! # contract address
+  wavesNumber: BigInt!
+}
+
+type ContestWave @entity {
+  id: ID! # combination of contest address and wave index
+  index: BigInt!
+  startTimestamp: BigInt!
+  endTimestamp: BigInt!
+  closeTimestamp: BigInt!
+  winnersNumber: BigInt!
+  winning: BigInt!
+  participants: [ContestWaveParticipant!]!
+}
+
+type ContestWaveParticipant @entity {
+  id: ID! # combination of wave id and account address
+  accountAddress: String!
+  successes: BigInt!
+  failures: BigInt!
+  diff: BigInt! # diffirence between successes and failures
 }
