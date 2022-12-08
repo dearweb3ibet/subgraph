@@ -1,5 +1,5 @@
 import { ParamsSet, ParticipantSet, Transfer } from "../../generated/Bet/Bet";
-import { Bet, BetParams } from "../../generated/schema";
+import { Bet, BetParams, BetParticipant } from "../../generated/schema";
 import { updateContestParticipants } from "../services/contestServices";
 
 /**
@@ -53,7 +53,29 @@ export function handleParamsSet(event: ParamsSet): void {
 
 /**
  * Handle a participant set event to add or update a bet participants.
- *
- * TODO: Implement function
  */
-export function handleParticipantSet(event: ParticipantSet): void {}
+export function handleParticipantSet(event: ParticipantSet): void {
+  // Load bet
+  let bet = Bet.load(event.params.tokenId.toString());
+  if (!bet) {
+    return;
+  }
+  // Define bet participant id
+  let betParticipantId =
+    event.params.tokenId.toString() +
+    "_" +
+    event.params.participantAccountAddress.toHexString();
+  // Load or create bet participant
+  let betParticipant = BetParticipant.load(betParticipantId);
+  if (!betParticipant) {
+    betParticipant = new BetParticipant(betParticipantId);
+    betParticipant.bet = bet.id;
+  }
+  // Update bet participant
+  betParticipant.addedTimestamp = event.params.participant.addedTimestamp;
+  betParticipant.accountAddress = event.params.participant.accountAddress.toHexString();
+  betParticipant.fee = event.params.participant.fee;
+  betParticipant.isFeeForSuccess = event.params.participant.isFeeForSuccess;
+  betParticipant.winning = event.params.participant.winning;
+  betParticipant.save();
+}

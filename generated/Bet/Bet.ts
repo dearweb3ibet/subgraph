@@ -175,9 +175,13 @@ export class ParticipantSet__Params {
     return this._event.parameters[0].value.toBigInt();
   }
 
+  get participantAccountAddress(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+
   get participant(): ParticipantSetParticipantStruct {
     return changetype<ParticipantSetParticipantStruct>(
-      this._event.parameters[1].value.toTuple()
+      this._event.parameters[2].value.toTuple()
     );
   }
 }

@@ -190,6 +190,12 @@
         "type": "uint256"
       },
       {
+        "indexed": true,
+        "internalType": "address",
+        "name": "participantAccountAddress",
+        "type": "address"
+      },
+      {
         "components": [
           {
             "internalType": "uint256",
