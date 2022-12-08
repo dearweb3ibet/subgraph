@@ -42,8 +42,8 @@ export class Bet extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get createdDate(): BigInt | null {
-    let value = this.get("createdDate");
+  get createdTimestamp(): BigInt | null {
+    let value = this.get("createdTimestamp");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -51,11 +51,45 @@ export class Bet extends Entity {
     }
   }
 
-  set createdDate(value: BigInt | null) {
+  set createdTimestamp(value: BigInt | null) {
     if (!value) {
-      this.unset("createdDate");
+      this.unset("createdTimestamp");
     } else {
-      this.set("createdDate", Value.fromBigInt(<BigInt>value));
+      this.set("createdTimestamp", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get creatorAddress(): string | null {
+    let value = this.get("creatorAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set creatorAddress(value: string | null) {
+    if (!value) {
+      this.unset("creatorAddress");
+    } else {
+      this.set("creatorAddress", Value.fromString(<string>value));
+    }
+  }
+
+  get creatorFee(): BigInt | null {
+    let value = this.get("creatorFee");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set creatorFee(value: BigInt | null) {
+    if (!value) {
+      this.unset("creatorFee");
+    } else {
+      this.set("creatorFee", Value.fromBigInt(<BigInt>value));
     }
   }
 
@@ -76,8 +110,8 @@ export class Bet extends Entity {
     }
   }
 
-  get minPrice(): BigInt | null {
-    let value = this.get("minPrice");
+  get targetMinPrice(): BigInt | null {
+    let value = this.get("targetMinPrice");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -85,16 +119,16 @@ export class Bet extends Entity {
     }
   }
 
-  set minPrice(value: BigInt | null) {
+  set targetMinPrice(value: BigInt | null) {
     if (!value) {
-      this.unset("minPrice");
+      this.unset("targetMinPrice");
     } else {
-      this.set("minPrice", Value.fromBigInt(<BigInt>value));
+      this.set("targetMinPrice", Value.fromBigInt(<BigInt>value));
     }
   }
 
-  get maxPrice(): BigInt | null {
-    let value = this.get("maxPrice");
+  get targetMaxPrice(): BigInt | null {
+    let value = this.get("targetMaxPrice");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -102,16 +136,16 @@ export class Bet extends Entity {
     }
   }
 
-  set maxPrice(value: BigInt | null) {
+  set targetMaxPrice(value: BigInt | null) {
     if (!value) {
-      this.unset("maxPrice");
+      this.unset("targetMaxPrice");
     } else {
-      this.set("maxPrice", Value.fromBigInt(<BigInt>value));
+      this.set("targetMaxPrice", Value.fromBigInt(<BigInt>value));
     }
   }
 
-  get dayStartTimestamp(): BigInt | null {
-    let value = this.get("dayStartTimestamp");
+  get targetTimestamp(): BigInt | null {
+    let value = this.get("targetTimestamp");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -119,16 +153,16 @@ export class Bet extends Entity {
     }
   }
 
-  set dayStartTimestamp(value: BigInt | null) {
+  set targetTimestamp(value: BigInt | null) {
     if (!value) {
-      this.unset("dayStartTimestamp");
+      this.unset("targetTimestamp");
     } else {
-      this.set("dayStartTimestamp", Value.fromBigInt(<BigInt>value));
+      this.set("targetTimestamp", Value.fromBigInt(<BigInt>value));
     }
   }
 
-  get rate(): BigInt | null {
-    let value = this.get("rate");
+  get participationDeadlineTimestamp(): BigInt | null {
+    let value = this.get("participationDeadlineTimestamp");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -136,67 +170,19 @@ export class Bet extends Entity {
     }
   }
 
-  set rate(value: BigInt | null) {
+  set participationDeadlineTimestamp(value: BigInt | null) {
     if (!value) {
-      this.unset("rate");
+      this.unset("participationDeadlineTimestamp");
     } else {
-      this.set("rate", Value.fromBigInt(<BigInt>value));
+      this.set(
+        "participationDeadlineTimestamp",
+        Value.fromBigInt(<BigInt>value)
+      );
     }
   }
 
-  get firstMember(): string | null {
-    let value = this.get("firstMember");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set firstMember(value: string | null) {
-    if (!value) {
-      this.unset("firstMember");
-    } else {
-      this.set("firstMember", Value.fromString(<string>value));
-    }
-  }
-
-  get secondMember(): string | null {
-    let value = this.get("secondMember");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set secondMember(value: string | null) {
-    if (!value) {
-      this.unset("secondMember");
-    } else {
-      this.set("secondMember", Value.fromString(<string>value));
-    }
-  }
-
-  get winner(): string | null {
-    let value = this.get("winner");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set winner(value: string | null) {
-    if (!value) {
-      this.unset("winner");
-    } else {
-      this.set("winner", Value.fromString(<string>value));
-    }
-  }
-
-  get winning(): BigInt | null {
-    let value = this.get("winning");
+  get feeForSuccess(): BigInt | null {
+    let value = this.get("feeForSuccess");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -204,11 +190,46 @@ export class Bet extends Entity {
     }
   }
 
-  set winning(value: BigInt | null) {
+  set feeForSuccess(value: BigInt | null) {
     if (!value) {
-      this.unset("winning");
+      this.unset("feeForSuccess");
     } else {
-      this.set("winning", Value.fromBigInt(<BigInt>value));
+      this.set("feeForSuccess", Value.fromBigInt(<BigInt>value));
     }
+  }
+
+  get feeForFailure(): BigInt | null {
+    let value = this.get("feeForFailure");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set feeForFailure(value: BigInt | null) {
+    if (!value) {
+      this.unset("feeForFailure");
+    } else {
+      this.set("feeForFailure", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get isClosed(): boolean {
+    let value = this.get("isClosed");
+    return value!.toBoolean();
+  }
+
+  set isClosed(value: boolean) {
+    this.set("isClosed", Value.fromBoolean(value));
+  }
+
+  get isSuccessful(): boolean {
+    let value = this.get("isSuccessful");
+    return value!.toBoolean();
+  }
+
+  set isSuccessful(value: boolean) {
+    this.set("isSuccessful", Value.fromBoolean(value));
   }
 }

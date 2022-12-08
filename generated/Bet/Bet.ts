@@ -109,44 +109,98 @@ export class ParamsSet__Params {
 }
 
 export class ParamsSetParamsStruct extends ethereum.Tuple {
-  get createdDate(): BigInt {
+  get createdTimestamp(): BigInt {
     return this[0].toBigInt();
   }
 
-  get symbol(): string {
-    return this[1].toString();
+  get creatorAddress(): Address {
+    return this[1].toAddress();
   }
 
-  get minPrice(): BigInt {
+  get creatorFee(): BigInt {
     return this[2].toBigInt();
   }
 
-  get maxPrice(): BigInt {
-    return this[3].toBigInt();
+  get symbol(): string {
+    return this[3].toString();
   }
 
-  get dayStartTimestamp(): BigInt {
+  get targetMinPrice(): BigInt {
     return this[4].toBigInt();
   }
 
-  get rate(): BigInt {
+  get targetMaxPrice(): BigInt {
     return this[5].toBigInt();
   }
 
-  get firstMember(): Address {
-    return this[6].toAddress();
+  get targetTimestamp(): BigInt {
+    return this[6].toBigInt();
   }
 
-  get secondMember(): Address {
-    return this[7].toAddress();
+  get participationDeadlineTimestamp(): BigInt {
+    return this[7].toBigInt();
   }
 
-  get winner(): Address {
-    return this[8].toAddress();
+  get feeForSuccess(): BigInt {
+    return this[8].toBigInt();
+  }
+
+  get feeForFailure(): BigInt {
+    return this[9].toBigInt();
+  }
+
+  get isClosed(): boolean {
+    return this[10].toBoolean();
+  }
+
+  get isSuccessful(): boolean {
+    return this[11].toBoolean();
+  }
+}
+
+export class ParticipantSet extends ethereum.Event {
+  get params(): ParticipantSet__Params {
+    return new ParticipantSet__Params(this);
+  }
+}
+
+export class ParticipantSet__Params {
+  _event: ParticipantSet;
+
+  constructor(event: ParticipantSet) {
+    this._event = event;
+  }
+
+  get tokenId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get participant(): ParticipantSetParticipantStruct {
+    return changetype<ParticipantSetParticipantStruct>(
+      this._event.parameters[1].value.toTuple()
+    );
+  }
+}
+
+export class ParticipantSetParticipantStruct extends ethereum.Tuple {
+  get addedTimestamp(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get accountAddress(): Address {
+    return this[1].toAddress();
+  }
+
+  get fee(): BigInt {
+    return this[2].toBigInt();
+  }
+
+  get isFeeForSuccess(): boolean {
+    return this[3].toBoolean();
   }
 
   get winning(): BigInt {
-    return this[9].toBigInt();
+    return this[4].toBigInt();
   }
 }
 
@@ -199,44 +253,74 @@ export class URISet__Params {
 }
 
 export class Bet__getParamsResultValue0Struct extends ethereum.Tuple {
-  get createdDate(): BigInt {
+  get createdTimestamp(): BigInt {
     return this[0].toBigInt();
   }
 
-  get symbol(): string {
-    return this[1].toString();
+  get creatorAddress(): Address {
+    return this[1].toAddress();
   }
 
-  get minPrice(): BigInt {
+  get creatorFee(): BigInt {
     return this[2].toBigInt();
   }
 
-  get maxPrice(): BigInt {
-    return this[3].toBigInt();
+  get symbol(): string {
+    return this[3].toString();
   }
 
-  get dayStartTimestamp(): BigInt {
+  get targetMinPrice(): BigInt {
     return this[4].toBigInt();
   }
 
-  get rate(): BigInt {
+  get targetMaxPrice(): BigInt {
     return this[5].toBigInt();
   }
 
-  get firstMember(): Address {
-    return this[6].toAddress();
+  get targetTimestamp(): BigInt {
+    return this[6].toBigInt();
   }
 
-  get secondMember(): Address {
-    return this[7].toAddress();
+  get participationDeadlineTimestamp(): BigInt {
+    return this[7].toBigInt();
   }
 
-  get winner(): Address {
-    return this[8].toAddress();
+  get feeForSuccess(): BigInt {
+    return this[8].toBigInt();
+  }
+
+  get feeForFailure(): BigInt {
+    return this[9].toBigInt();
+  }
+
+  get isClosed(): boolean {
+    return this[10].toBoolean();
+  }
+
+  get isSuccessful(): boolean {
+    return this[11].toBoolean();
+  }
+}
+
+export class Bet__getParticipantsResultValue0Struct extends ethereum.Tuple {
+  get addedTimestamp(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get accountAddress(): Address {
+    return this[1].toAddress();
+  }
+
+  get fee(): BigInt {
+    return this[2].toBigInt();
+  }
+
+  get isFeeForSuccess(): boolean {
+    return this[3].toBoolean();
   }
 
   get winning(): BigInt {
-    return this[9].toBigInt();
+    return this[4].toBigInt();
   }
 }
 
@@ -333,14 +417,45 @@ export class Bet extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  getFee(): BigInt {
-    let result = super.call("getFee", "getFee():(uint256)", []);
+  getContestAddress(): Address {
+    let result = super.call(
+      "getContestAddress",
+      "getContestAddress():(address)",
+      []
+    );
+
+    return result[0].toAddress();
+  }
+
+  try_getContestAddress(): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "getContestAddress",
+      "getContestAddress():(address)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  getContestFeePercent(): BigInt {
+    let result = super.call(
+      "getContestFeePercent",
+      "getContestFeePercent():(uint256)",
+      []
+    );
 
     return result[0].toBigInt();
   }
 
-  try_getFee(): ethereum.CallResult<BigInt> {
-    let result = super.tryCall("getFee", "getFee():(uint256)", []);
+  try_getContestFeePercent(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "getContestFeePercent",
+      "getContestFeePercent():(uint256)",
+      []
+    );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -351,7 +466,7 @@ export class Bet extends ethereum.SmartContract {
   getParams(tokenId: BigInt): Bet__getParamsResultValue0Struct {
     let result = super.call(
       "getParams",
-      "getParams(uint256):((uint256,string,int256,int256,uint256,uint256,address,address,address,uint256))",
+      "getParams(uint256):((uint256,address,uint256,string,int256,int256,uint256,uint256,uint256,uint256,bool,bool))",
       [ethereum.Value.fromUnsignedBigInt(tokenId)]
     );
 
@@ -363,7 +478,7 @@ export class Bet extends ethereum.SmartContract {
   ): ethereum.CallResult<Bet__getParamsResultValue0Struct> {
     let result = super.tryCall(
       "getParams",
-      "getParams(uint256):((uint256,string,int256,int256,uint256,uint256,address,address,address,uint256))",
+      "getParams(uint256):((uint256,address,uint256,string,int256,int256,uint256,uint256,uint256,uint256,bool,bool))",
       [ethereum.Value.fromUnsignedBigInt(tokenId)]
     );
     if (result.reverted) {
@@ -373,6 +488,81 @@ export class Bet extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(
       changetype<Bet__getParamsResultValue0Struct>(value[0].toTuple())
     );
+  }
+
+  getParticipants(
+    tokenId: BigInt
+  ): Array<Bet__getParticipantsResultValue0Struct> {
+    let result = super.call(
+      "getParticipants",
+      "getParticipants(uint256):((uint256,address,uint256,bool,uint256)[])",
+      [ethereum.Value.fromUnsignedBigInt(tokenId)]
+    );
+
+    return result[0].toTupleArray<Bet__getParticipantsResultValue0Struct>();
+  }
+
+  try_getParticipants(
+    tokenId: BigInt
+  ): ethereum.CallResult<Array<Bet__getParticipantsResultValue0Struct>> {
+    let result = super.tryCall(
+      "getParticipants",
+      "getParticipants(uint256):((uint256,address,uint256,bool,uint256)[])",
+      [ethereum.Value.fromUnsignedBigInt(tokenId)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      value[0].toTupleArray<Bet__getParticipantsResultValue0Struct>()
+    );
+  }
+
+  getUsageAddress(): Address {
+    let result = super.call(
+      "getUsageAddress",
+      "getUsageAddress():(address)",
+      []
+    );
+
+    return result[0].toAddress();
+  }
+
+  try_getUsageAddress(): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "getUsageAddress",
+      "getUsageAddress():(address)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  getUsageFeePercent(): BigInt {
+    let result = super.call(
+      "getUsageFeePercent",
+      "getUsageFeePercent():(uint256)",
+      []
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_getUsageFeePercent(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "getUsageFeePercent",
+      "getUsageFeePercent():(uint256)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
   isApprovedForAll(owner: Address, operator: Address): boolean {
@@ -529,8 +719,20 @@ export class ConstructorCall__Inputs {
     return this._call.inputValues[0].value.toAddress();
   }
 
-  get fee(): BigInt {
-    return this._call.inputValues[1].value.toBigInt();
+  get contestAddress(): Address {
+    return this._call.inputValues[1].value.toAddress();
+  }
+
+  get usageAddress(): Address {
+    return this._call.inputValues[2].value.toAddress();
+  }
+
+  get contestFeePercent(): BigInt {
+    return this._call.inputValues[3].value.toBigInt();
+  }
+
+  get usageFeePercent(): BigInt {
+    return this._call.inputValues[4].value.toBigInt();
   }
 }
 
@@ -538,36 +740,6 @@ export class ConstructorCall__Outputs {
   _call: ConstructorCall;
 
   constructor(call: ConstructorCall) {
-    this._call = call;
-  }
-}
-
-export class AcceptCall extends ethereum.Call {
-  get inputs(): AcceptCall__Inputs {
-    return new AcceptCall__Inputs(this);
-  }
-
-  get outputs(): AcceptCall__Outputs {
-    return new AcceptCall__Outputs(this);
-  }
-}
-
-export class AcceptCall__Inputs {
-  _call: AcceptCall;
-
-  constructor(call: AcceptCall) {
-    this._call = call;
-  }
-
-  get tokenId(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-}
-
-export class AcceptCall__Outputs {
-  _call: AcceptCall;
-
-  constructor(call: AcceptCall) {
     this._call = call;
   }
 }
@@ -606,6 +778,36 @@ export class ApproveCall__Outputs {
   }
 }
 
+export class CloseCall extends ethereum.Call {
+  get inputs(): CloseCall__Inputs {
+    return new CloseCall__Inputs(this);
+  }
+
+  get outputs(): CloseCall__Outputs {
+    return new CloseCall__Outputs(this);
+  }
+}
+
+export class CloseCall__Inputs {
+  _call: CloseCall;
+
+  constructor(call: CloseCall) {
+    this._call = call;
+  }
+
+  get tokenId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+}
+
+export class CloseCall__Outputs {
+  _call: CloseCall;
+
+  constructor(call: CloseCall) {
+    this._call = call;
+  }
+}
+
 export class CreateCall extends ethereum.Call {
   get inputs(): CreateCall__Inputs {
     return new CreateCall__Inputs(this);
@@ -627,24 +829,28 @@ export class CreateCall__Inputs {
     return this._call.inputValues[0].value.toString();
   }
 
+  get fee(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+
   get symbol(): string {
-    return this._call.inputValues[1].value.toString();
+    return this._call.inputValues[2].value.toString();
   }
 
-  get minPrice(): BigInt {
-    return this._call.inputValues[2].value.toBigInt();
-  }
-
-  get maxPrice(): BigInt {
+  get targetMinPrice(): BigInt {
     return this._call.inputValues[3].value.toBigInt();
   }
 
-  get dayStartTimestamp(): BigInt {
+  get targetMaxPrice(): BigInt {
     return this._call.inputValues[4].value.toBigInt();
   }
 
-  get rate(): BigInt {
+  get targetTimestamp(): BigInt {
     return this._call.inputValues[5].value.toBigInt();
+  }
+
+  get participationDeadlineTimestamp(): BigInt {
+    return this._call.inputValues[6].value.toBigInt();
   }
 }
 
@@ -830,32 +1036,160 @@ export class SetBetCheckerAddressCall__Outputs {
   }
 }
 
-export class SetFeeCall extends ethereum.Call {
-  get inputs(): SetFeeCall__Inputs {
-    return new SetFeeCall__Inputs(this);
+export class SetContestAddressCall extends ethereum.Call {
+  get inputs(): SetContestAddressCall__Inputs {
+    return new SetContestAddressCall__Inputs(this);
   }
 
-  get outputs(): SetFeeCall__Outputs {
-    return new SetFeeCall__Outputs(this);
+  get outputs(): SetContestAddressCall__Outputs {
+    return new SetContestAddressCall__Outputs(this);
   }
 }
 
-export class SetFeeCall__Inputs {
-  _call: SetFeeCall;
+export class SetContestAddressCall__Inputs {
+  _call: SetContestAddressCall;
 
-  constructor(call: SetFeeCall) {
+  constructor(call: SetContestAddressCall) {
     this._call = call;
   }
 
-  get fee(): BigInt {
+  get contestAddress(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetContestAddressCall__Outputs {
+  _call: SetContestAddressCall;
+
+  constructor(call: SetContestAddressCall) {
+    this._call = call;
+  }
+}
+
+export class SetContestFeePercentCall extends ethereum.Call {
+  get inputs(): SetContestFeePercentCall__Inputs {
+    return new SetContestFeePercentCall__Inputs(this);
+  }
+
+  get outputs(): SetContestFeePercentCall__Outputs {
+    return new SetContestFeePercentCall__Outputs(this);
+  }
+}
+
+export class SetContestFeePercentCall__Inputs {
+  _call: SetContestFeePercentCall;
+
+  constructor(call: SetContestFeePercentCall) {
+    this._call = call;
+  }
+
+  get contestFeePercent(): BigInt {
     return this._call.inputValues[0].value.toBigInt();
   }
 }
 
-export class SetFeeCall__Outputs {
-  _call: SetFeeCall;
+export class SetContestFeePercentCall__Outputs {
+  _call: SetContestFeePercentCall;
 
-  constructor(call: SetFeeCall) {
+  constructor(call: SetContestFeePercentCall) {
+    this._call = call;
+  }
+}
+
+export class SetUsageAddressCall extends ethereum.Call {
+  get inputs(): SetUsageAddressCall__Inputs {
+    return new SetUsageAddressCall__Inputs(this);
+  }
+
+  get outputs(): SetUsageAddressCall__Outputs {
+    return new SetUsageAddressCall__Outputs(this);
+  }
+}
+
+export class SetUsageAddressCall__Inputs {
+  _call: SetUsageAddressCall;
+
+  constructor(call: SetUsageAddressCall) {
+    this._call = call;
+  }
+
+  get usageAddress(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetUsageAddressCall__Outputs {
+  _call: SetUsageAddressCall;
+
+  constructor(call: SetUsageAddressCall) {
+    this._call = call;
+  }
+}
+
+export class SetUsageFeePercentCall extends ethereum.Call {
+  get inputs(): SetUsageFeePercentCall__Inputs {
+    return new SetUsageFeePercentCall__Inputs(this);
+  }
+
+  get outputs(): SetUsageFeePercentCall__Outputs {
+    return new SetUsageFeePercentCall__Outputs(this);
+  }
+}
+
+export class SetUsageFeePercentCall__Inputs {
+  _call: SetUsageFeePercentCall;
+
+  constructor(call: SetUsageFeePercentCall) {
+    this._call = call;
+  }
+
+  get usageFeePercent(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+}
+
+export class SetUsageFeePercentCall__Outputs {
+  _call: SetUsageFeePercentCall;
+
+  constructor(call: SetUsageFeePercentCall) {
+    this._call = call;
+  }
+}
+
+export class TakePartCall extends ethereum.Call {
+  get inputs(): TakePartCall__Inputs {
+    return new TakePartCall__Inputs(this);
+  }
+
+  get outputs(): TakePartCall__Outputs {
+    return new TakePartCall__Outputs(this);
+  }
+}
+
+export class TakePartCall__Inputs {
+  _call: TakePartCall;
+
+  constructor(call: TakePartCall) {
+    this._call = call;
+  }
+
+  get tokenId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get fee(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+
+  get isFeeForSuccess(): boolean {
+    return this._call.inputValues[2].value.toBoolean();
+  }
+}
+
+export class TakePartCall__Outputs {
+  _call: TakePartCall;
+
+  constructor(call: TakePartCall) {
     this._call = call;
   }
 }
@@ -924,36 +1258,6 @@ export class TransferOwnershipCall__Outputs {
   _call: TransferOwnershipCall;
 
   constructor(call: TransferOwnershipCall) {
-    this._call = call;
-  }
-}
-
-export class VerifyCall extends ethereum.Call {
-  get inputs(): VerifyCall__Inputs {
-    return new VerifyCall__Inputs(this);
-  }
-
-  get outputs(): VerifyCall__Outputs {
-    return new VerifyCall__Outputs(this);
-  }
-}
-
-export class VerifyCall__Inputs {
-  _call: VerifyCall;
-
-  constructor(call: VerifyCall) {
-    this._call = call;
-  }
-
-  get tokenId(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-}
-
-export class VerifyCall__Outputs {
-  _call: VerifyCall;
-
-  constructor(call: VerifyCall) {
     this._call = call;
   }
 }
