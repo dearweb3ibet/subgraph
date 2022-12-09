@@ -154,6 +154,52 @@ export class WaveCreateWaveStruct extends ethereum.Tuple {
   }
 }
 
+export class WaveParticipantSet extends ethereum.Event {
+  get params(): WaveParticipantSet__Params {
+    return new WaveParticipantSet__Params(this);
+  }
+}
+
+export class WaveParticipantSet__Params {
+  _event: WaveParticipantSet;
+
+  constructor(event: WaveParticipantSet) {
+    this._event = event;
+  }
+
+  get index(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get participantAccountAddress(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+
+  get participant(): WaveParticipantSetParticipantStruct {
+    return changetype<WaveParticipantSetParticipantStruct>(
+      this._event.parameters[2].value.toTuple()
+    );
+  }
+}
+
+export class WaveParticipantSetParticipantStruct extends ethereum.Tuple {
+  get accountAddress(): Address {
+    return this[0].toAddress();
+  }
+
+  get successes(): BigInt {
+    return this[1].toBigInt();
+  }
+
+  get failures(): BigInt {
+    return this[2].toBigInt();
+  }
+
+  get variance(): BigInt {
+    return this[3].toBigInt();
+  }
+}
+
 export class Contest__getLastWaveResultValue0Struct extends ethereum.Tuple {
   get startTimestamp(): BigInt {
     return this[0].toBigInt();
@@ -180,6 +226,24 @@ export class Contest__getLastWaveResultValue0Struct extends ethereum.Tuple {
   }
 }
 
+export class Contest__getLastWaveParticipantsResultValue0Struct extends ethereum.Tuple {
+  get accountAddress(): Address {
+    return this[0].toAddress();
+  }
+
+  get successes(): BigInt {
+    return this[1].toBigInt();
+  }
+
+  get failures(): BigInt {
+    return this[2].toBigInt();
+  }
+
+  get variance(): BigInt {
+    return this[3].toBigInt();
+  }
+}
+
 export class Contest__getWaveResultValue0Struct extends ethereum.Tuple {
   get startTimestamp(): BigInt {
     return this[0].toBigInt();
@@ -203,6 +267,24 @@ export class Contest__getWaveResultValue0Struct extends ethereum.Tuple {
 
   get winners(): Array<Address> {
     return this[5].toAddressArray();
+  }
+}
+
+export class Contest__getWaveParticipantsResultValue0Struct extends ethereum.Tuple {
+  get accountAddress(): Address {
+    return this[0].toAddress();
+  }
+
+  get successes(): BigInt {
+    return this[1].toBigInt();
+  }
+
+  get failures(): BigInt {
+    return this[2].toBigInt();
+  }
+
+  get variance(): BigInt {
+    return this[3].toBigInt();
   }
 }
 
@@ -240,6 +322,39 @@ export class Contest extends ethereum.SmartContract {
     );
   }
 
+  getLastWaveParticipants(): Array<
+    Contest__getLastWaveParticipantsResultValue0Struct
+  > {
+    let result = super.call(
+      "getLastWaveParticipants",
+      "getLastWaveParticipants():((address,int256,int256,int256)[])",
+      []
+    );
+
+    return result[0].toTupleArray<
+      Contest__getLastWaveParticipantsResultValue0Struct
+    >();
+  }
+
+  try_getLastWaveParticipants(): ethereum.CallResult<
+    Array<Contest__getLastWaveParticipantsResultValue0Struct>
+  > {
+    let result = super.tryCall(
+      "getLastWaveParticipants",
+      "getLastWaveParticipants():((address,int256,int256,int256)[])",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      value[0].toTupleArray<
+        Contest__getLastWaveParticipantsResultValue0Struct
+      >()
+    );
+  }
+
   getWave(index: BigInt): Contest__getWaveResultValue0Struct {
     let result = super.call(
       "getWave",
@@ -264,6 +379,39 @@ export class Contest extends ethereum.SmartContract {
     let value = result.value;
     return ethereum.CallResult.fromValue(
       changetype<Contest__getWaveResultValue0Struct>(value[0].toTuple())
+    );
+  }
+
+  getWaveParticipants(
+    index: BigInt
+  ): Array<Contest__getWaveParticipantsResultValue0Struct> {
+    let result = super.call(
+      "getWaveParticipants",
+      "getWaveParticipants(uint256):((address,int256,int256,int256)[])",
+      [ethereum.Value.fromUnsignedBigInt(index)]
+    );
+
+    return result[0].toTupleArray<
+      Contest__getWaveParticipantsResultValue0Struct
+    >();
+  }
+
+  try_getWaveParticipants(
+    index: BigInt
+  ): ethereum.CallResult<
+    Array<Contest__getWaveParticipantsResultValue0Struct>
+  > {
+    let result = super.tryCall(
+      "getWaveParticipants",
+      "getWaveParticipants(uint256):((address,int256,int256,int256)[])",
+      [ethereum.Value.fromUnsignedBigInt(index)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      value[0].toTupleArray<Contest__getWaveParticipantsResultValue0Struct>()
     );
   }
 
@@ -328,6 +476,40 @@ export class CloseLastWaveCall__Outputs {
   _call: CloseLastWaveCall;
 
   constructor(call: CloseLastWaveCall) {
+    this._call = call;
+  }
+}
+
+export class ProcessBetParticipantsCall extends ethereum.Call {
+  get inputs(): ProcessBetParticipantsCall__Inputs {
+    return new ProcessBetParticipantsCall__Inputs(this);
+  }
+
+  get outputs(): ProcessBetParticipantsCall__Outputs {
+    return new ProcessBetParticipantsCall__Outputs(this);
+  }
+}
+
+export class ProcessBetParticipantsCall__Inputs {
+  _call: ProcessBetParticipantsCall;
+
+  constructor(call: ProcessBetParticipantsCall) {
+    this._call = call;
+  }
+
+  get betParticipantAddresses(): Array<Address> {
+    return this._call.inputValues[0].value.toAddressArray();
+  }
+
+  get betParticipantWinnings(): Array<BigInt> {
+    return this._call.inputValues[1].value.toBigIntArray();
+  }
+}
+
+export class ProcessBetParticipantsCall__Outputs {
+  _call: ProcessBetParticipantsCall;
+
+  constructor(call: ProcessBetParticipantsCall) {
     this._call = call;
   }
 }

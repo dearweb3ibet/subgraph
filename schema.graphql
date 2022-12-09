@@ -54,5 +54,5 @@ type ContestWaveParticipant @entity {
   accountAddress: String!
   successes: BigInt!
   failures: BigInt!
-  diff: BigInt! # diffirence between successes and failures
+  variance: BigInt!
 }

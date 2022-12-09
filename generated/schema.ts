@@ -513,12 +513,12 @@ export class ContestWaveParticipant extends Entity {
     this.set("failures", Value.fromBigInt(value));
   }
 
-  get diff(): BigInt {
-    let value = this.get("diff");
+  get variance(): BigInt {
+    let value = this.get("variance");
     return value!.toBigInt();
   }
 
-  set diff(value: BigInt) {
-    this.set("diff", Value.fromBigInt(value));
+  set variance(value: BigInt) {
+    this.set("variance", Value.fromBigInt(value));
   }
 }
