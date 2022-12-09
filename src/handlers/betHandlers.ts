@@ -1,6 +1,5 @@
 import { ParamsSet, ParticipantSet, Transfer } from "../../generated/Bet/Bet";
 import { Bet, BetParams, BetParticipant } from "../../generated/schema";
-import { updateContestParticipants } from "../services/contestServices";
 
 /**
  * Handle a tranfer event to create a bet.
@@ -29,8 +28,6 @@ export function handleParamsSet(event: ParamsSet): void {
     betParams.bet = bet.id;
     betParams.isClosed = false;
   }
-  // // Define bet status
-  let isBetClosed = !betParams.isClosed && event.params.params.isClosed;
   // Update bet params
   betParams.createdTimestamp = event.params.params.createdTimestamp;
   betParams.creatorAddress = event.params.params.creatorAddress.toHexString();
@@ -46,9 +43,6 @@ export function handleParamsSet(event: ParamsSet): void {
   betParams.isClosed = event.params.params.isClosed;
   betParams.isSuccessful = event.params.params.isSuccessful;
   betParams.save();
-  if (isBetClosed) {
-    updateContestParticipants(bet);
-  }
 }
 
 /**
