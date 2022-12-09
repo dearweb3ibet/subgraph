@@ -5,11 +5,11 @@ import { Contest, ContestWave } from "../../generated/schema";
  * Handle a wave create event to create contest wave.
  */
 export function handleWaveCreate(event: WaveCreate): void {
-  // Load contest
+  // Load or create contest
   let contest = Contest.load(event.address.toHexString());
   if (!contest) {
     contest = new Contest(event.address.toHexString());
-    contest.wavesNumber = 0;
+    contest.save();
   }
   // Create contest wave
   let wave = new ContestWave(
@@ -23,9 +23,6 @@ export function handleWaveCreate(event: WaveCreate): void {
   wave.winnersNumber = event.params.wave.winnersNumber;
   wave.winning = event.params.wave.winning;
   wave.save();
-  // Increase contest waves number
-  contest.wavesNumber = contest.wavesNumber + 1;
-  contest.save();
 }
 
 /**

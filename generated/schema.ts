@@ -327,15 +327,6 @@ export class Contest extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get wavesNumber(): i32 {
-    let value = this.get("wavesNumber");
-    return value!.toI32();
-  }
-
-  set wavesNumber(value: i32) {
-    this.set("wavesNumber", Value.fromI32(value));
-  }
-
   get waves(): Array<string> {
     let value = this.get("waves");
     return value!.toStringArray();

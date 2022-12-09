@@ -33,7 +33,6 @@ type BetParticipant @entity {
 
 type Contest @entity {
   id: ID! # contract address
-  wavesNumber: Int!
   waves: [ContestWave!]! @derivedFrom(field: "contest")
 }
 
