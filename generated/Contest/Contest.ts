@@ -200,50 +200,6 @@ export class WaveParticipantSetParticipantStruct extends ethereum.Tuple {
   }
 }
 
-export class Contest__getLastWaveResultValue0Struct extends ethereum.Tuple {
-  get startTimestamp(): BigInt {
-    return this[0].toBigInt();
-  }
-
-  get endTimestamp(): BigInt {
-    return this[1].toBigInt();
-  }
-
-  get closeTimestamp(): BigInt {
-    return this[2].toBigInt();
-  }
-
-  get winnersNumber(): BigInt {
-    return this[3].toBigInt();
-  }
-
-  get winning(): BigInt {
-    return this[4].toBigInt();
-  }
-
-  get winners(): Array<Address> {
-    return this[5].toAddressArray();
-  }
-}
-
-export class Contest__getLastWaveParticipantsResultValue0Struct extends ethereum.Tuple {
-  get accountAddress(): Address {
-    return this[0].toAddress();
-  }
-
-  get successes(): BigInt {
-    return this[1].toBigInt();
-  }
-
-  get failures(): BigInt {
-    return this[2].toBigInt();
-  }
-
-  get variance(): BigInt {
-    return this[3].toBigInt();
-  }
-}
-
 export class Contest__getWaveResultValue0Struct extends ethereum.Tuple {
   get startTimestamp(): BigInt {
     return this[0].toBigInt();
@@ -293,66 +249,27 @@ export class Contest extends ethereum.SmartContract {
     return new Contest("Contest", address);
   }
 
-  getLastWave(): Contest__getLastWaveResultValue0Struct {
+  getLastWaveIndex(): BigInt {
     let result = super.call(
-      "getLastWave",
-      "getLastWave():((uint256,uint256,uint256,uint256,uint256,address[]))",
+      "getLastWaveIndex",
+      "getLastWaveIndex():(uint256)",
       []
     );
 
-    return changetype<Contest__getLastWaveResultValue0Struct>(
-      result[0].toTuple()
-    );
+    return result[0].toBigInt();
   }
 
-  try_getLastWave(): ethereum.CallResult<
-    Contest__getLastWaveResultValue0Struct
-  > {
+  try_getLastWaveIndex(): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
-      "getLastWave",
-      "getLastWave():((uint256,uint256,uint256,uint256,uint256,address[]))",
+      "getLastWaveIndex",
+      "getLastWaveIndex():(uint256)",
       []
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(
-      changetype<Contest__getLastWaveResultValue0Struct>(value[0].toTuple())
-    );
-  }
-
-  getLastWaveParticipants(): Array<
-    Contest__getLastWaveParticipantsResultValue0Struct
-  > {
-    let result = super.call(
-      "getLastWaveParticipants",
-      "getLastWaveParticipants():((address,int256,int256,int256)[])",
-      []
-    );
-
-    return result[0].toTupleArray<
-      Contest__getLastWaveParticipantsResultValue0Struct
-    >();
-  }
-
-  try_getLastWaveParticipants(): ethereum.CallResult<
-    Array<Contest__getLastWaveParticipantsResultValue0Struct>
-  > {
-    let result = super.tryCall(
-      "getLastWaveParticipants",
-      "getLastWaveParticipants():((address,int256,int256,int256)[])",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(
-      value[0].toTupleArray<
-        Contest__getLastWaveParticipantsResultValue0Struct
-      >()
-    );
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
   getWave(index: BigInt): Contest__getWaveResultValue0Struct {
@@ -450,32 +367,36 @@ export class Contest extends ethereum.SmartContract {
   }
 }
 
-export class CloseLastWaveCall extends ethereum.Call {
-  get inputs(): CloseLastWaveCall__Inputs {
-    return new CloseLastWaveCall__Inputs(this);
+export class CloseWaveCall extends ethereum.Call {
+  get inputs(): CloseWaveCall__Inputs {
+    return new CloseWaveCall__Inputs(this);
   }
 
-  get outputs(): CloseLastWaveCall__Outputs {
-    return new CloseLastWaveCall__Outputs(this);
+  get outputs(): CloseWaveCall__Outputs {
+    return new CloseWaveCall__Outputs(this);
   }
 }
 
-export class CloseLastWaveCall__Inputs {
-  _call: CloseLastWaveCall;
+export class CloseWaveCall__Inputs {
+  _call: CloseWaveCall;
 
-  constructor(call: CloseLastWaveCall) {
+  constructor(call: CloseWaveCall) {
     this._call = call;
   }
 
+  get index(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
   get winners(): Array<Address> {
-    return this._call.inputValues[0].value.toAddressArray();
+    return this._call.inputValues[1].value.toAddressArray();
   }
 }
 
-export class CloseLastWaveCall__Outputs {
-  _call: CloseLastWaveCall;
+export class CloseWaveCall__Outputs {
+  _call: CloseWaveCall;
 
-  constructor(call: CloseLastWaveCall) {
+  constructor(call: CloseWaveCall) {
     this._call = call;
   }
 }
