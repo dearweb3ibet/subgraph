@@ -59,6 +59,15 @@ export class Bet extends Entity {
   set participants(value: Array<string>) {
     this.set("participants", Value.fromStringArray(value));
   }
+
+  get participantsNumber(): i32 {
+    let value = this.get("participantsNumber");
+    return value!.toI32();
+  }
+
+  set participantsNumber(value: i32) {
+    this.set("participantsNumber", Value.fromI32(value));
+  }
 }
 
 export class BetParams extends Entity {

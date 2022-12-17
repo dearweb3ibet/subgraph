@@ -2,6 +2,7 @@ type Bet @entity {
   id: ID!
   params: BetParams! @derivedFrom(field: "bet")
   participants: [BetParticipant!]! @derivedFrom(field: "bet")
+  participantsNumber: Int!
 }
 
 type BetParams @entity {

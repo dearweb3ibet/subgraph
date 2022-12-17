@@ -8,6 +8,7 @@ export function handleTransfer(event: Transfer): void {
   let bet = Bet.load(event.params.tokenId.toString());
   if (!bet) {
     bet = new Bet(event.params.tokenId.toString());
+    bet.participantsNumber = 0;
     bet.save();
   }
 }
@@ -63,10 +64,12 @@ export function handleParticipantSet(event: ParticipantSet): void {
   let betParticipantId =
     bet.id + "_" + event.params.participantAccountAddress.toHexString();
   // Load or create bet participant
+  let isBetParticipantCreated = false;
   let betParticipant = BetParticipant.load(betParticipantId);
   if (!betParticipant) {
     betParticipant = new BetParticipant(betParticipantId);
     betParticipant.bet = bet.id;
+    isBetParticipantCreated = true;
   }
   // Update bet participant
   betParticipant.addedTimestamp = event.params.participant.addedTimestamp;
@@ -78,4 +81,9 @@ export function handleParticipantSet(event: ParticipantSet): void {
     betParams.creatorAddress;
   betParticipant.winning = event.params.participant.winning;
   betParticipant.save();
+  // Update bet
+  if (isBetParticipantCreated) {
+    bet.participantsNumber = bet.participantsNumber + 1;
+    bet.save();
+  }
 }
