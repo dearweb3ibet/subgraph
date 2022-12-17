@@ -277,6 +277,15 @@ export class BetParticipant extends Entity {
     this.set("fee", Value.fromBigInt(value));
   }
 
+  get isCreator(): boolean {
+    let value = this.get("isCreator");
+    return value!.toBoolean();
+  }
+
+  set isCreator(value: boolean) {
+    this.set("isCreator", Value.fromBoolean(value));
+  }
+
   get isFeeForSuccess(): boolean {
     let value = this.get("isFeeForSuccess");
     return value!.toBoolean();

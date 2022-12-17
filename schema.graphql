@@ -27,6 +27,7 @@ type BetParticipant @entity {
   addedTimestamp: BigInt!
   accountAddress: String!
   fee: BigInt!
+  isCreator: Boolean!
   isFeeForSuccess: Boolean!
   winning: BigInt!
 }

@@ -54,6 +54,11 @@ export function handleParticipantSet(event: ParticipantSet): void {
   if (!bet) {
     return;
   }
+  // Load bet params
+  let betParams = BetParams.load(event.params.tokenId.toString());
+  if (!betParams) {
+    return;
+  }
   // Define bet participant id
   let betParticipantId =
     bet.id + "_" + event.params.participantAccountAddress.toHexString();
@@ -68,6 +73,9 @@ export function handleParticipantSet(event: ParticipantSet): void {
   betParticipant.accountAddress = event.params.participant.accountAddress.toHexString();
   betParticipant.fee = event.params.participant.fee;
   betParticipant.isFeeForSuccess = event.params.participant.isFeeForSuccess;
+  betParticipant.isCreator =
+    event.params.participant.accountAddress.toHexString() ==
+    betParams.creatorAddress;
   betParticipant.winning = event.params.participant.winning;
   betParticipant.save();
 }
