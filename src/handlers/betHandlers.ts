@@ -1,20 +1,35 @@
+import { Address, BigInt } from "@graphprotocol/graph-ts";
 import { ParamsSet, ParticipantSet, Transfer } from "../../generated/Bet/Bet";
-import { Bet, BetParams, BetParticipant } from "../../generated/schema";
+import { Bet, BetParticipant } from "../../generated/schema";
 
 /**
- * Handle a tranfer event to create a bet.
+ * Handle a tranfer event to create a bet with default values.
  */
 export function handleTransfer(event: Transfer): void {
   let bet = Bet.load(event.params.tokenId.toString());
   if (!bet) {
     bet = new Bet(event.params.tokenId.toString());
+    // Defaults for params
+    bet.createdTimestamp = BigInt.zero();
+    bet.creatorAddress = Address.zero().toHexString();
+    bet.creatorFee = BigInt.zero();
+    bet.symbol = "";
+    bet.targetMinPrice = BigInt.zero();
+    bet.targetMaxPrice = BigInt.zero();
+    bet.targetTimestamp = BigInt.zero();
+    bet.participationDeadlineTimestamp = BigInt.zero();
+    bet.feeForSuccess = BigInt.zero();
+    bet.feeForFailure = BigInt.zero();
+    bet.isClosed = false;
+    bet.isSuccessful = false;
+    // Defaults for participants
     bet.participantsNumber = 0;
     bet.save();
   }
 }
 
 /**
- * Handle a params set event to create or update a bet params.
+ * Handle a params set event to update a bet.
  */
 export function handleParamsSet(event: ParamsSet): void {
   // Load bet
@@ -22,28 +37,21 @@ export function handleParamsSet(event: ParamsSet): void {
   if (!bet) {
     return;
   }
-  // Load or create bet params
-  let betParams = BetParams.load(event.params.tokenId.toString());
-  if (!betParams) {
-    betParams = new BetParams(event.params.tokenId.toString());
-    betParams.bet = bet.id;
-    betParams.isClosed = false;
-  }
-  // Update bet params
-  betParams.createdTimestamp = event.params.params.createdTimestamp;
-  betParams.creatorAddress = event.params.params.creatorAddress.toHexString();
-  betParams.creatorFee = event.params.params.creatorFee;
-  betParams.symbol = event.params.params.symbol;
-  betParams.targetMinPrice = event.params.params.targetMinPrice;
-  betParams.targetMaxPrice = event.params.params.targetMaxPrice;
-  betParams.targetTimestamp = event.params.params.targetTimestamp;
-  betParams.participationDeadlineTimestamp =
+  // Update bet
+  bet.createdTimestamp = event.params.params.createdTimestamp;
+  bet.creatorAddress = event.params.params.creatorAddress.toHexString();
+  bet.creatorFee = event.params.params.creatorFee;
+  bet.symbol = event.params.params.symbol;
+  bet.targetMinPrice = event.params.params.targetMinPrice;
+  bet.targetMaxPrice = event.params.params.targetMaxPrice;
+  bet.targetTimestamp = event.params.params.targetTimestamp;
+  bet.participationDeadlineTimestamp =
     event.params.params.participationDeadlineTimestamp;
-  betParams.feeForSuccess = event.params.params.feeForSuccess;
-  betParams.feeForFailure = event.params.params.feeForFailure;
-  betParams.isClosed = event.params.params.isClosed;
-  betParams.isSuccessful = event.params.params.isSuccessful;
-  betParams.save();
+  bet.feeForSuccess = event.params.params.feeForSuccess;
+  bet.feeForFailure = event.params.params.feeForFailure;
+  bet.isClosed = event.params.params.isClosed;
+  bet.isSuccessful = event.params.params.isSuccessful;
+  bet.save();
 }
 
 /**
@@ -53,11 +61,6 @@ export function handleParticipantSet(event: ParticipantSet): void {
   // Load bet
   let bet = Bet.load(event.params.tokenId.toString());
   if (!bet) {
-    return;
-  }
-  // Load bet params
-  let betParams = BetParams.load(event.params.tokenId.toString());
-  if (!betParams) {
     return;
   }
   // Define bet participant id
@@ -77,8 +80,7 @@ export function handleParticipantSet(event: ParticipantSet): void {
   betParticipant.fee = event.params.participant.fee;
   betParticipant.isFeeForSuccess = event.params.participant.isFeeForSuccess;
   betParticipant.isCreator =
-    event.params.participant.accountAddress.toHexString() ==
-    betParams.creatorAddress;
+    event.params.participant.accountAddress.toHexString() == bet.creatorAddress;
   betParticipant.winning = event.params.participant.winning;
   betParticipant.save();
   // Update bet

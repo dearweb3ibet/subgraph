@@ -42,74 +42,6 @@ export class Bet extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get params(): string {
-    let value = this.get("params");
-    return value!.toString();
-  }
-
-  set params(value: string) {
-    this.set("params", Value.fromString(value));
-  }
-
-  get participants(): Array<string> {
-    let value = this.get("participants");
-    return value!.toStringArray();
-  }
-
-  set participants(value: Array<string>) {
-    this.set("participants", Value.fromStringArray(value));
-  }
-
-  get participantsNumber(): i32 {
-    let value = this.get("participantsNumber");
-    return value!.toI32();
-  }
-
-  set participantsNumber(value: i32) {
-    this.set("participantsNumber", Value.fromI32(value));
-  }
-}
-
-export class BetParams extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save BetParams entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type BetParams must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
-      );
-      store.set("BetParams", id.toString(), this);
-    }
-  }
-
-  static load(id: string): BetParams | null {
-    return changetype<BetParams | null>(store.get("BetParams", id));
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value!.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get bet(): string {
-    let value = this.get("bet");
-    return value!.toString();
-  }
-
-  set bet(value: string) {
-    this.set("bet", Value.fromString(value));
-  }
-
   get createdTimestamp(): BigInt {
     let value = this.get("createdTimestamp");
     return value!.toBigInt();
@@ -216,6 +148,24 @@ export class BetParams extends Entity {
 
   set isSuccessful(value: boolean) {
     this.set("isSuccessful", Value.fromBoolean(value));
+  }
+
+  get participants(): Array<string> {
+    let value = this.get("participants");
+    return value!.toStringArray();
+  }
+
+  set participants(value: Array<string>) {
+    this.set("participants", Value.fromStringArray(value));
+  }
+
+  get participantsNumber(): i32 {
+    let value = this.get("participantsNumber");
+    return value!.toI32();
+  }
+
+  set participantsNumber(value: i32) {
+    this.set("participantsNumber", Value.fromI32(value));
   }
 }
 
