@@ -81,6 +81,7 @@ export function handleParticipantSet(event: ParticipantSet): void {
   betParticipant.isFeeForSuccess = event.params.participant.isFeeForSuccess;
   betParticipant.isCreator =
     event.params.participant.accountAddress.toHexString() == bet.creatorAddress;
+  betParticipant.isWinner = event.params.participant.isWinner;
   betParticipant.winning = event.params.participant.winning;
   betParticipant.save();
   // Update bet

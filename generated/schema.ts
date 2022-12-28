@@ -254,6 +254,15 @@ export class BetParticipant extends Entity {
     this.set("isFeeForSuccess", Value.fromBoolean(value));
   }
 
+  get isWinner(): boolean {
+    let value = this.get("isWinner");
+    return value!.toBoolean();
+  }
+
+  set isWinner(value: boolean) {
+    this.set("isWinner", Value.fromBoolean(value));
+  }
+
   get winning(): BigInt {
     let value = this.get("winning");
     return value!.toBigInt();
@@ -345,13 +354,13 @@ export class ContestWave extends Entity {
     this.set("contest", Value.fromString(value));
   }
 
-  get index(): BigInt {
-    let value = this.get("index");
+  get waveId(): BigInt {
+    let value = this.get("waveId");
     return value!.toBigInt();
   }
 
-  set index(value: BigInt) {
-    this.set("index", Value.fromBigInt(value));
+  set waveId(value: BigInt) {
+    this.set("waveId", Value.fromBigInt(value));
   }
 
   get startTimestamp(): BigInt {

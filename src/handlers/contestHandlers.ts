@@ -1,6 +1,6 @@
 import {
-  WaveClose,
-  WaveCreate,
+  WaveClosed,
+  WaveCreated,
   WaveParticipantSet,
 } from "../../generated/Contest/Contest";
 import {
@@ -10,9 +10,9 @@ import {
 } from "../../generated/schema";
 
 /**
- * Handle a wave create event to create contest wave.
+ * Handle a wave created event to create contest wave.
  */
-export function handleWaveCreate(event: WaveCreate): void {
+export function handleWaveCreated(event: WaveCreated): void {
   // Load or create contest
   let contest = Contest.load(event.address.toHexString());
   if (!contest) {
@@ -20,9 +20,9 @@ export function handleWaveCreate(event: WaveCreate): void {
     contest.save();
   }
   // Create contest wave
-  let wave = new ContestWave(contest.id + "_" + event.params.index.toString());
+  let wave = new ContestWave(contest.id + "_" + event.params.id.toString());
   wave.contest = contest.id;
-  wave.index = event.params.index;
+  wave.waveId = event.params.id;
   wave.startTimestamp = event.params.wave.startTimestamp;
   wave.endTimestamp = event.params.wave.endTimestamp;
   wave.closeTimestamp = event.params.wave.closeTimestamp;
@@ -32,16 +32,16 @@ export function handleWaveCreate(event: WaveCreate): void {
 }
 
 /**
- * Handle a wave close event to update contest wave.
+ * Handle a wave closed event to update contest wave.
  */
-export function handleWaveClose(event: WaveClose): void {
+export function handleWaveClosed(event: WaveClosed): void {
   // Load contest
   let contest = Contest.load(event.address.toHexString());
   if (!contest) {
     return;
   }
   // Load contest wave
-  let wave = ContestWave.load(contest.id + "_" + event.params.index.toString());
+  let wave = ContestWave.load(contest.id + "_" + event.params.id.toString());
   if (!wave) {
     return;
   }
@@ -64,7 +64,7 @@ export function handleWaveParticipantSet(event: WaveParticipantSet): void {
     return;
   }
   // Load contest wave
-  let wave = ContestWave.load(contest.id + "_" + event.params.index.toString());
+  let wave = ContestWave.load(contest.id + "_" + event.params.id.toString());
   if (!wave) {
     return;
   }

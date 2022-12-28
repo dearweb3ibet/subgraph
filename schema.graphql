@@ -26,6 +26,7 @@ type BetParticipant @entity {
   fee: BigInt!
   isCreator: Boolean!
   isFeeForSuccess: Boolean!
+  isWinner: Boolean!
   winning: BigInt!
 }
 
@@ -35,9 +36,9 @@ type Contest @entity {
 }
 
 type ContestWave @entity {
-  id: ID! # combination of contest address and wave index
+  id: ID! # combination of contest address and wave id
   contest: Contest!
-  index: BigInt!
+  waveId: BigInt!
   startTimestamp: BigInt!
   endTimestamp: BigInt!
   closeTimestamp: BigInt!
