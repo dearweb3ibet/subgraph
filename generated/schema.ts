@@ -11,6 +11,56 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
+export class Account extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Account entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Account must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Account", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Account | null {
+    return changetype<Account | null>(store.get("Account", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get successes(): i32 {
+    let value = this.get("successes");
+    return value!.toI32();
+  }
+
+  set successes(value: i32) {
+    this.set("successes", Value.fromI32(value));
+  }
+
+  get failures(): i32 {
+    let value = this.get("failures");
+    return value!.toI32();
+  }
+
+  set failures(value: i32) {
+    this.set("failures", Value.fromI32(value));
+  }
+}
+
 export class Bet extends Entity {
   constructor(id: string) {
     super();
@@ -157,6 +207,15 @@ export class Bet extends Entity {
 
   set participants(value: Array<string>) {
     this.set("participants", Value.fromStringArray(value));
+  }
+
+  get participantAddresses(): Array<string> {
+    let value = this.get("participantAddresses");
+    return value!.toStringArray();
+  }
+
+  set participantAddresses(value: Array<string>) {
+    this.set("participantAddresses", Value.fromStringArray(value));
   }
 
   get participantsNumber(): i32 {

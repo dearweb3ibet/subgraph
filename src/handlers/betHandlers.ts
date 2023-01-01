@@ -1,6 +1,6 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts";
 import { ParamsSet, ParticipantSet, Transfer } from "../../generated/Bet/Bet";
-import { Bet, BetParticipant } from "../../generated/schema";
+import { Account, Bet, BetParticipant } from "../../generated/schema";
 
 /**
  * Handle a tranfer event to create a bet with default values.
@@ -23,6 +23,7 @@ export function handleTransfer(event: Transfer): void {
     bet.isClosed = false;
     bet.isSuccessful = false;
     // Defaults for participants
+    bet.participantAddresses = new Array<string>();
     bet.participantsNumber = 0;
     bet.save();
   }
@@ -37,6 +38,8 @@ export function handleParamsSet(event: ParamsSet): void {
   if (!bet) {
     return;
   }
+  // Define is bet closed
+  let isBetRecentlyClosed = !bet.isClosed && event.params.params.isClosed;
   // Update bet
   bet.createdTimestamp = event.params.params.createdTimestamp;
   bet.creatorAddress = event.params.params.creatorAddress.toHexString();
@@ -52,6 +55,38 @@ export function handleParamsSet(event: ParamsSet): void {
   bet.isClosed = event.params.params.isClosed;
   bet.isSuccessful = event.params.params.isSuccessful;
   bet.save();
+  // Update accounts if bet is recently closed
+  if (isBetRecentlyClosed) {
+    for (let i = 0; i < bet.participantAddresses.length; i++) {
+      // Load participant
+      let participantId = bet.id + "_" + bet.participantAddresses[i];
+      let participant = BetParticipant.load(participantId);
+      if (participant) {
+        // Load or create participant account
+        let account = Account.load(participant.accountAddress);
+        if (!account) {
+          account = new Account(participant.accountAddress);
+          account.successes = 0;
+          account.failures = 0;
+        }
+        // Define participant is winner
+        let isParticipantWinner = false;
+        if (participant.isFeeForSuccess && bet.isSuccessful) {
+          isParticipantWinner = true;
+        }
+        if (!participant.isFeeForSuccess && !bet.isSuccessful) {
+          isParticipantWinner = true;
+        }
+        // Update account
+        if (isParticipantWinner) {
+          account.successes += account.successes + 1;
+        } else {
+          account.failures += account.failures + 1;
+        }
+        account.save();
+      }
+    }
+  }
 }
 
 /**
@@ -86,6 +121,9 @@ export function handleParticipantSet(event: ParticipantSet): void {
   betParticipant.save();
   // Update bet
   if (isBetParticipantCreated) {
+    let newBetParticipantAddresses = bet.participantAddresses;
+    newBetParticipantAddresses.push(betParticipant.accountAddress);
+    bet.participantAddresses = newBetParticipantAddresses;
     bet.participantsNumber = bet.participantsNumber + 1;
     bet.save();
   }

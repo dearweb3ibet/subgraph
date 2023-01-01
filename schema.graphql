@@ -1,3 +1,9 @@
+type Account @entity {
+  id: ID! # account address
+  successes: Int!
+  failures: Int!
+}
+
 type Bet @entity {
   id: ID!
   # Params
@@ -15,6 +21,7 @@ type Bet @entity {
   isSuccessful: Boolean!
   # Participants
   participants: [BetParticipant!]! @derivedFrom(field: "bet")
+  participantAddresses: [String!]!
   participantsNumber: Int!
 }
 
