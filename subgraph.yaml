@@ -6,9 +6,9 @@ dataSources:
     name: Bet
     network: mumbai
     source:
-      address: "0x0b4C5Cde52EAC43879a4dBc16C5d3648d96207F4"
+      address: "0xE2F5357435c7F4d9930eD69706EC1fE1A802AfA8"
       abi: Bet
-      startBlock: 30257072
+      startBlock: 30463919
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -31,9 +31,9 @@ dataSources:
     name: Contest
     network: mumbai
     source:
-      address: "0x820CE6E906c9d53A05dbc847B17e1231EECcfa80"
+      address: "0xA5DA20d741cDF8934f1C4A66388c36EE8B6Cc654"
       abi: Contest
-      startBlock: 30257062
+      startBlock: 30463902
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
